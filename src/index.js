@@ -3,6 +3,7 @@ require("dotenv").config()
 const connectDb = require("./config/database")
 const userRouter = require("./router/userRouter")
 const cors = require("cors")
+const folderRouter = require("./router/folderRouter")
 const PORT = process.env.PORT || 9000
 const app = express()
 
@@ -19,6 +20,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use("/api/",userRouter)
+app.use("/api/",folderRouter)
 
 connectDb()
 .then(() => {
