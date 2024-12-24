@@ -36,8 +36,8 @@ formRouter.post("/form/:userId", userAuth, async (req, res) => {
   formRouter.get("/form/:userId", userAuth, async (req, res) => {
     try {
       const { userId } = req.params; 
-      const { folderId } = req.body; 
-  
+      const { folderId } = req.query; 
+
       if (!mongoose.isValidObjectId(userId)) {
         return res.status(400).json({ message: "Invalid userId format" });
       }

@@ -2,6 +2,7 @@ const express = require("express");
 const userAuth = require("../middlewares/userAuth");
 const Folder = require("../models/folder.schema");
 const mongoose = require("mongoose")
+const Form = require("../models/form.schema")
 
 const folderRouter = express.Router();
 
@@ -59,6 +60,7 @@ folderRouter.delete("/folder/:folderId", userAuth, async (req, res) => {
       if (!folder) {
         return res.status(404).json({ message: "Folder not found" });
       }
+      const deletedForms = await Form.deleteMany({ folderId });
       return res.status(200).json({ message: "Folders deleted successfully", folder });
     } catch (error) {
       return res.status(500).json({ message: "Failed to delete folder", error: error.message });
