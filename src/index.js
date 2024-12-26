@@ -5,6 +5,7 @@ const userRouter = require("./router/userRouter")
 const cors = require("cors")
 const folderRouter = require("./router/folderRouter")
 const formRouter = require("./router/formRouter")
+const workspaceRouter = require("./router/workspaceRouter")
 const PORT = process.env.PORT || 9000
 const app = express()
 
@@ -23,6 +24,7 @@ app.use(express.json())
 app.use("/api/",userRouter)
 app.use("/api/",folderRouter)
 app.use("/api/", formRouter)
+app.use("/api/", workspaceRouter)
 
 connectDb()
 .then(() => {

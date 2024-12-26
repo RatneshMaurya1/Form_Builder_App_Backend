@@ -60,4 +60,32 @@ formRouter.post("/form/:userId", userAuth, async (req, res) => {
     }
   });
 
+  formRouter.delete("/form/:userId/:formId", userAuth, async (req, res) => {
+    try {
+      const { userId, formId } = req.params;
+  
+      if (!mongoose.isValidObjectId(userId)) {
+        return res.status(400).json({ message: "Invalid userId format" });
+      }
+  
+      if (!mongoose.isValidObjectId(formId)) {
+        return res.status(400).json({ message: "Invalid formId format" });
+      }
+  
+      const deletedForm = await Form.findOneAndDelete({ userId, _id: formId });
+  
+      if (!deletedForm) {
+        return res.status(404).json({ message: "No form found with the specified userId and formId" });
+      }
+  
+      return res.status(200).json({ message: "Form deleted successfully", form: deletedForm });
+    } catch (error) {
+      return res.status(500).json({ 
+        message: "An error occurred while deleting the form", 
+        error: error.message 
+      });
+    }
+  });
+  
+
 module.exports = formRouter

@@ -41,7 +41,7 @@ folderRouter.get("/folder/:userId", userAuth, async (req, res) => {
   
       const folders = await Folder.find({ userId });
       if (!folders || folders.length === 0) {
-        return res.status(404).json({ message: "No folders found for this user" });
+        return res.status(200).json({ message: "No folders found for this user" });
       }
       return res.status(200).json({ message: "Folders fetched successfully", folders });
     } catch (error) {
