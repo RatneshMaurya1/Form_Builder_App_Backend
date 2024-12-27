@@ -13,8 +13,18 @@ folderRouter.post("/folder/:userId", userAuth, async (req, res) => {
     if (!mongoose.isValidObjectId(userId)) {
         return res.status(400).json({ message: "Invalid userId format" });
       }
-    if (!userId || !name) {
-     return res.status(400).json({ message: "userId and name are required" });
+    if (!userId) {
+     return res.status(400).json({ message: "userId is required" });
+    }
+    if (!name) {
+      return res.status(400).json({ message: "Folder name is required." });
+    }
+
+    const existingFolder = await Folder.findOne({ name, userId });
+    if (existingFolder) {
+      return res
+        .status(400)
+        .json({ message: `Folder with the name "${name}" already exists.` });
     }
     const folder = new Folder({
       name,

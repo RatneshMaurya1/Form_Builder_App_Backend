@@ -18,7 +18,17 @@ formRouter.post("/form/:userId", userAuth, async (req, res) => {
       if (folderId && !mongoose.isValidObjectId(folderId)) {
         return res.status(400).json({ message: "Invalid folderId format" });
       }
+
+      if (!name) {
+        return res.status(400).json({ message: "Folder name is required." });
+      }
   
+      const existingForm = await Form.findOne({ name, userId });
+      if (existingForm) {
+        return res
+          .status(400)
+          .json({ message: `Form with the name "${name}" already exists.` });
+      }
 
       const form = new Form({
         name,
