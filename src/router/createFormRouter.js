@@ -2,30 +2,22 @@ const express = require("express");
 const createFormRouter = express.Router();
 const CreateForm = require("../models/createForm.schema");
 
-// POST API: Create a new form
 createFormRouter.post("/create/forms", async (req, res) => {
   try {
     const { formId, name, elements } = req.body;
-    console.log(formId)
-    console.log(name)
-    console.log(elements)
-    // Validate input
     if (!formId || !name || !Array.isArray(elements) || elements.length === 0) {
       return res
         .status(400)
         .json({ message: "Invalid form data. formId, name, and elements are required." });
     }
 
-    // Check for required fields in each element
     for (const element of elements) {
-        // Validate that either bubble or inputType is present
         if (!(element.bubble || element.inputType)) {
           return res.status(400).json({
             message: "Each element must have either bubble or inputType.",
           });
         }
       
-        // Check that content and id are present
         if (!element.content || !element.id) {
           return res.status(400).json({
             message: "Each element must have content and id.",
@@ -43,17 +35,15 @@ createFormRouter.post("/create/forms", async (req, res) => {
   }
 });
 
-// GET API: Fetch all forms
 createFormRouter.get("/forms", async (req, res) => {
   try {
-    const forms = await CreateForm.find().populate("formId"); // Populate formId if needed
+    const forms = await CreateForm.find().populate("formId"); 
     res.status(200).json(forms);
   } catch (error) {
     res.status(500).json({ message: "Error fetching forms.", error: error.message });
   }
 });
 
-// GET API: Fetch a form by ID
 createFormRouter.get("/forms/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -69,13 +59,11 @@ createFormRouter.get("/forms/:id", async (req, res) => {
   }
 });
 
-// PUT API: Update a form by ID
 createFormRouter.put("/forms/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { formId, name, elements } = req.body;
 
-    // Validate input
     if (!formId || !name || !Array.isArray(elements) || elements.length === 0) {
       return res
         .status(400)
@@ -106,7 +94,6 @@ createFormRouter.put("/forms/:id", async (req, res) => {
   }
 });
 
-// DELETE API: Delete a form by ID
 createFormRouter.delete("/forms/:id", async (req, res) => {
   try {
     const { id } = req.params;
