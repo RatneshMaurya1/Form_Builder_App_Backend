@@ -1,61 +1,45 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const getISTTime = () => {
-    const offset = 5.5 * 60 * 60 * 1000; 
-    return new Date(Date.now() + offset).toISOString();
-  };
-const itemSchema = new mongoose.Schema({
-    type: {
-      type: String,
-      required: true,
-      enum: ['text', 'image', 'input'], 
-    },
-    content: {
-      type: String, 
-      required: function () {
-        return this.type !== 'input';
+const createFormSchema = new mongoose.Schema({
+  formId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Form",
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  elements: [
+    {
+      bubble: {
+        type: String,
+        enum: ["bubbleText", "bubbleImage"],
+        required: true,
+      },
+      inputType: {
+        type: String,
+        enum: [
+          "inputText",
+          "inputNumber",
+          "inputEmail",
+          "inputPhone",
+          "inputDate",
+          "inputRating",
+          "inputButton",
+        ],
+        required: true,
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+      id: {
+        type: String,
+        required: true,
       },
     },
-    inputType: {
-      type: String,
-      enum: ['text', 'email', 'number', 'date', 'rating', 'phone'], 
-      required: function () {
-        return this.type === 'input'; 
-      },
-    },
-    placeholder: {
-      type: String,
-      required: function () {
-        return this.type === 'input' && (this.inputType === 'text' || this.inputType === 'number');
-      },
-    },
-    isRequired: {
-      type: Boolean,
-      default: false,
-    },
-    response: {
-      type: mongoose.Schema.Types.Mixed,
-      default: null,
-    },
-  });
+  ],
+});
 
-  const CreateFormSchema = new mongoose.Schema({
-    name: { type: String, required: true }, 
-    elements: {
-      type: [itemSchema],
-      validate: {
-        validator: function (v) {
-          return v.length > 0; 
-        },
-        message: 'A form must have at least one element.',
-      },
-    },
-  },{
-    timestamps:{
-        createdTime:getISTTime,
-    }
-  });
-  
-  const CreatedForm = mongoose.model('CreateForm', CreateFormSchema);
-  
-  module.exports = CreatedForm;
+module.exports = mongoose.model("CreateForm", createFormSchema);
