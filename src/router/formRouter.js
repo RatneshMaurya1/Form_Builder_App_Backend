@@ -2,6 +2,7 @@ const express = require("express");
 const userAuth = require("../middlewares/userAuth");
 const Folder = require("../models/folder.schema");
 const Form = require("../models/form.schema")
+const CreateForm = require("../models/createForm.schema")
 const mongoose = require("mongoose")
 
 const formRouter = express.Router()
@@ -83,7 +84,7 @@ formRouter.post("/form/:userId", userAuth, async (req, res) => {
       }
   
       const deletedForm = await Form.findOneAndDelete({ userId, _id: formId });
-  
+      await CreateForm.findOneAndDelete({formId})
       if (!deletedForm) {
         return res.status(404).json({ message: "No form found with the specified userId and formId" });
       }

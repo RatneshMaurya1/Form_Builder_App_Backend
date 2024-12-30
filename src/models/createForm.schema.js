@@ -15,7 +15,6 @@ const createFormSchema = new mongoose.Schema({
       bubble: {
         type: String,
         enum: ["bubbleText", "bubbleImage"],
-        required: true,
       },
       inputType: {
         type: String,
@@ -28,11 +27,9 @@ const createFormSchema = new mongoose.Schema({
           "inputRating",
           "inputButton",
         ],
-        required: true,
       },
       content: {
         type: String,
-        required: true,
       },
       id: {
         type: String,

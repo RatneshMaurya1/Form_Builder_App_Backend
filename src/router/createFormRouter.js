@@ -1,10 +1,13 @@
 const express = require("express");
 const createFormRouter = express.Router();
 const CreateForm = require("../models/createForm.schema");
+const userAuth = require("../middlewares/userAuth")
+require("dotenv").config()
 
-createFormRouter.post("/create/forms", async (req, res) => {
+createFormRouter.post("/create/forms",userAuth,async (req, res) => {
   try {
     const { formId, name, elements } = req.body;
+
     if (!formId || !name || !Array.isArray(elements) || elements.length === 0) {
       return res
         .status(400)
@@ -18,7 +21,7 @@ createFormRouter.post("/create/forms", async (req, res) => {
           });
         }
       
-        if (!element.content || !element.id) {
+        if (!element.id) {
           return res.status(400).json({
             message: "Each element must have content and id.",
           });
@@ -35,79 +38,40 @@ createFormRouter.post("/create/forms", async (req, res) => {
   }
 });
 
-createFormRouter.get("/forms", async (req, res) => {
-  try {
-    const forms = await CreateForm.find().populate("formId"); 
-    res.status(200).json(forms);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching forms.", error: error.message });
-  }
-});
+createFormRouter.get("/create/forms/:formId", userAuth, async (req, res) => {
+  const { formId } = req.params;
 
-createFormRouter.get("/forms/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const form = await CreateForm.findById(id).populate("formId");
+    const form = await CreateForm.findOne({formId})
 
     if (!form) {
-      return res.status(404).json({ message: "Form not found." });
+      return res.status(200).json({ message: "Form not found." });
     }
 
-    res.status(200).json(form);
+    res.status(200).json({ message: "Form fetched successfully!", form });
   } catch (error) {
     res.status(500).json({ message: "Error fetching form.", error: error.message });
   }
 });
 
-createFormRouter.put("/forms/:id", async (req, res) => {
+createFormRouter.get("/create/forms/:formId/link", userAuth, async (req, res) => {
+  const { formId } = req.params;
+
   try {
-    const { id } = req.params;
-    const { formId, name, elements } = req.body;
+    const fillForm = await CreateForm.findOne({ formId });
 
-    if (!formId || !name || !Array.isArray(elements) || elements.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Invalid form data. formId, name, and elements are required." });
-    }
-
-    for (const element of elements) {
-      if (!element.type || !element.inputType || !element.content || !element.id) {
-        return res.status(400).json({
-          message: "Each element must have type, inputType, content, and id.",
-        });
-      }
-    }
-
-    const updatedForm = await CreateForm.findByIdAndUpdate(
-      id,
-      { formId, name, elements },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedForm) {
+    if (!fillForm) {
       return res.status(404).json({ message: "Form not found." });
     }
 
-    res.status(200).json({ message: "Form updated successfully!", form: updatedForm });
+    const formLink = `${process.env.LOCAL_FRONTEND_URL}/fill/form/${fillForm._id}`;
+
+    res.status(200).json({
+      message: "Form link generated successfully!",
+      formLink,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error updating form.", error: error.message });
+    res.status(500).json({ message: "Error generating form link.", error: error.message });
   }
 });
-
-createFormRouter.delete("/forms/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedForm = await CreateForm.findByIdAndDelete(id);
-
-    if (!deletedForm) {
-      return res.status(404).json({ message: "Form not found." });
-    }
-
-    res.status(200).json({ message: "Form deleted successfully!" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting form.", error: error.message });
-  }
-});
-
 module.exports = createFormRouter;
