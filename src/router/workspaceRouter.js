@@ -286,7 +286,7 @@ workspaceRouter.get('/share/dashboard/:mode', userAuth, async (req, res) => {
       return res.status(400).json({ message: "Invalid mode. Use 'edit' or 'view'." });
     }
 
-    const shareableLink = `${process.env.LOCAL_FRONTEND_URL}/share/dashboard/${workspace._id}?mode=${mode}`;
+    const shareableLink = `${process.env.FRONTEND_URL}/share/dashboard/${workspace._id}?mode=${mode}`;
 
     return res.status(200).json({
       message: "Shareable link created",

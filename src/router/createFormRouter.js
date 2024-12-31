@@ -64,11 +64,29 @@ createFormRouter.get("/create/forms/:formId/link", userAuth, async (req, res) =>
       return res.status(404).json({ message: "Form not found." });
     }
 
-    const formLink = `${process.env.LOCAL_FRONTEND_URL}/fill/form/${fillForm._id}`;
+    const formLink = `${process.env.FRONTEND_URL}/fill/form/${fillForm._id}`;
 
     res.status(200).json({
       message: "Form link generated successfully!",
       formLink,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error generating form link.", error: error.message });
+  }
+});
+createFormRouter.get("/fill/forms/:createFormId", userAuth, async (req, res) => {
+  const { createFormId } = req.params;
+
+  try {
+    const getFillForm = await CreateForm.findOne({_id: createFormId });
+
+    if (!getFillForm) {
+      return res.status(404).json({ message: "Form not found." });
+    }
+
+    res.status(200).json({
+      message: "Fill Form fetched successfully!",
+      getFillForm,
     });
   } catch (error) {
     res.status(500).json({ message: "Error generating form link.", error: error.message });

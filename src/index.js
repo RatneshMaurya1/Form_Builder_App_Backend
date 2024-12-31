@@ -7,6 +7,7 @@ const folderRouter = require("./router/folderRouter")
 const formRouter = require("./router/formRouter")
 const workspaceRouter = require("./router/workspaceRouter")
 const createFormRouter = require("./router/createFormRouter")
+const filledFormRouter = require("./router/filledFormRouter")
 const PORT = process.env.PORT || 9000
 const app = express()
 
@@ -27,6 +28,7 @@ app.use("/api/",folderRouter)
 app.use("/api/", formRouter)
 app.use("/api/", workspaceRouter)
 app.use("/api/",createFormRouter)
+app.use("/api/",filledFormRouter)
 
 connectDb()
 .then(() => {
