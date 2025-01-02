@@ -64,7 +64,7 @@ createFormRouter.get("/create/forms/:formId/link", userAuth, async (req, res) =>
       return res.status(404).json({ message: "Form not found." });
     }
 
-    const formLink = `${process.env.FRONTEND_URL}/fill/form/${fillForm._id}`;
+    const formLink = `${process.env.FRONTEND_URL}/fill/form/${formId}/${fillForm._id}`;
 
     res.status(200).json({
       message: "Form link generated successfully!",

@@ -1,6 +1,7 @@
 const express = require("express");
 const filledFormRouter = express.Router();
 const FilledForm = require("../models/filledForm.schema");
+const userAuth = require("../middlewares/userAuth");
 
 filledFormRouter.post("/filled/forms", async (req, res) => {
   const { formId, responses } = req.body;
@@ -20,6 +21,7 @@ filledFormRouter.post("/filled/forms", async (req, res) => {
     res.status(500).json({ message: "Error creating form.", error });
   }
 });
+
 
 filledFormRouter.patch("/filled/forms/:id", async (req, res) => {
   const { responses, completed } = req.body;
@@ -59,6 +61,26 @@ filledFormRouter.patch("/filled/forms/:id", async (req, res) => {
   } catch (error) {
     console.error("Error updating form:", error);
     res.status(500).json({ message: "Error updating form", error });
+  }
+});
+
+filledFormRouter.get("/filled/forms/:formId",userAuth,async (req, res) => {
+  const { formId } = req.params;
+
+  try {
+    const filledForm = await FilledForm.find({ formId });
+
+    if (!filledForm) {
+      return res.status(404).json({ message: "Form not found." });
+    }
+
+    res.status(200).json({
+      message: "Form retrieved successfully!",
+      filledForm,
+    });
+  } catch (error) {
+    console.error("Error retrieving form:", error);
+    res.status(500).json({ message: "Error retrieving form.", error });
   }
 });
 

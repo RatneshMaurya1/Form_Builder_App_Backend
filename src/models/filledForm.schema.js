@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 
-const getISTTime = () => {
-    const offset = 5.5 * 60 * 60 * 1000;
-    return new Date(Date.now() + offset).toISOString();
-};
+
 
 const ResponseSchema = new mongoose.Schema({
     elementId: { 
@@ -36,9 +33,7 @@ const FilledFormSchema = new mongoose.Schema({
     responses: [ResponseSchema], 
     completed: { type: Boolean, default: false },
 }, {
-    timestamps: {
-        currentTime: getISTTime,
-    },
+    timestamps:true,
 });
 
 const FilledForm = mongoose.model("FilledForm", FilledFormSchema);
