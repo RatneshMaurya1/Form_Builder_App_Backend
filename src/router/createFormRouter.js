@@ -74,7 +74,7 @@ createFormRouter.get("/create/forms/:formId/link", userAuth, async (req, res) =>
     res.status(500).json({ message: "Error generating form link.", error: error.message });
   }
 });
-createFormRouter.get("/fill/forms/:createFormId", userAuth, async (req, res) => {
+createFormRouter.get("/fill/forms/:createFormId", async (req, res) => {
   const { createFormId } = req.params;
 
   try {
