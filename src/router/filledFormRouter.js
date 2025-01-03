@@ -64,7 +64,7 @@ filledFormRouter.patch("/filled/forms/:id", async (req, res) => {
   }
 });
 
-filledFormRouter.get("/filled/forms/:formId",userAuth,async (req, res) => {
+filledFormRouter.get("/filled/forms/:formId",async (req, res) => {
   const { formId } = req.params;
 
   try {
